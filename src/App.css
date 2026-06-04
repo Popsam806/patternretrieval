@@ -1,0 +1,228 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; 
+  background-color: #05070a; /* Dark background behind the game window */
+}
+
+/* Background canvas surrounding wrapper layout */
+.game-wrapper-center {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Default desktop layout dimensions (80% screen dimensions) */
+.pattern-retrieval-bounded {
+  position: relative;
+  width: 80vw;
+  height: 80vh;
+  background-color: #161b22; 
+  border: 0.125rem solid #00ffcc;
+  border-radius: 0.5rem;
+  box-shadow: 0rem 0rem 1.875rem rgba(0, 255, 204, 0.15);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none; 
+}
+
+#retrievalCanvas {
+  background-color: #161b22;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 1; 
+}
+
+/* UI Overlay Heads Up Display Layout */
+.hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.9375rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  pointer-events: none; 
+  z-index: 10; 
+}
+
+.game-title {
+  color: #00ffcc;
+  font-weight: bold;
+  font-size: 1rem;
+  letter-spacing: 0.125rem;
+  text-shadow: 0 0 0.5rem rgba(0, 255, 204, 0.4);
+}
+
+.scores {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #00ffcc;
+  letter-spacing: 0.0625rem;
+}
+
+.scores span {
+  margin-left: 1.25rem;
+}
+
+/* Menu Overlays */
+.system-failure-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(13, 17, 23, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  z-index: 100; 
+  cursor: pointer;
+}
+
+.system-failure-overlay h2 {
+  font-size: 1.5rem;
+  color: #ff0055; 
+  margin-bottom: 1.25rem;
+  text-align: center;
+  letter-spacing: 0.1875rem;
+  text-shadow: 0 0 0.9375rem rgba(255, 0, 85, 0.6);
+  padding: 0 0.625rem;
+}
+
+.reboot-btn {
+  padding: 0.75rem 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8125rem;
+  font-weight: bold;
+  background-color: transparent;
+  color: #00ffcc;
+  border: 0.125rem solid #00ffcc;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  pointer-events: auto; 
+  transition: all 0.2s ease;
+}
+
+.reboot-btn:hover {
+  background-color: rgba(0, 255, 204, 0.1);
+  box-shadow: 0 0 0.5rem rgba(0, 255, 204, 0.4);
+}
+
+/* Splash Loader Screen Styles */
+.initial-splash-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0d1117;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.splash-title {
+  color: #00ffcc;
+  font-size: 1.625rem;
+  letter-spacing: 0.1875rem;
+  margin-bottom: 1.25rem;
+  text-shadow: 0 0 0.9375rem rgba(0, 255, 204, 0.6);
+  text-align: center;
+}
+
+.splash-image-container {
+  width: 6.875rem;
+  height: 6.875rem;
+  border: 0.1875rem solid #00ffcc;
+  border-radius: 50%;
+  padding: 0.3125rem;
+  background-color: #161b22;
+  box-shadow: 0 0 1.5625rem rgba(0, 255, 204, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5625rem;
+}
+
+.splash-agent-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.glitch-loader-bar {
+  width: 12.5rem;
+  height: 0.375rem;
+  background-color: #161b22;
+  border: 0.0625rem solid #00ffcc;
+  border-radius: 0.1875rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.loader-progress {
+  width: 0%;
+  height: 100%;
+  background-color: #00ffcc;
+  box-shadow: 0 0 0.5rem #00ffcc;
+  animation: loadProgress 2s linear forwards;
+}
+
+.splash-subtitle {
+  color: #8b949e;
+  font-size: 0.75rem;
+  letter-spacing: 0.125rem;
+}
+
+@keyframes loadProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* -----------------------------------------
+   UPGRADED MOBILE RESPONSIVENESS OVERRIDES
+   ----------------------------------------- */
+@media (max-width: 37.5rem) {
+  .pattern-retrieval-bounded {
+    width: 90vw;   /* Upgraded to 90% screen width on mobile */
+    height: 50vh;  /* Reduced height to prevent vertical cutoff and scrolling */
+    max-height: 25rem; /* Puts a safety cap so it never bleeds into mobile bottom menus */
+  }
+
+  .game-title {
+    display: none; 
+  }
+
+  .hud-overlay {
+    justify-content: flex-end;
+    padding: 0.75rem;
+  }
+
+  .scores {
+    font-size: 0.875rem;
+  }
+
+  .system-failure-overlay h2 {
+    font-size: 1.125rem;
+  }
+
+  .splash-title {
+    font-size: 1.25rem;
+  }
+}
