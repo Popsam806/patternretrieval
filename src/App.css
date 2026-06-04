@@ -181,7 +181,8 @@ html, body {
   height: 100%;
   background-color: #00ffcc;
   box-shadow: 0 0 0.5rem #00ffcc;
-  animation: loadProgress 2s linear forwards;
+  animation: loadProgress 4s linear forwards;
+  -webkit-animation: loadProgress 4s linear forwards;
 }
 
 .splash-subtitle {
