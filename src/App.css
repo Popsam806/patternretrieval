@@ -22,7 +22,7 @@ html, body {
   width: 80vw;
   height: 80vh;
   background-color: #161b22; 
-  border: 0.125rem solid #00ffcc;
+  /* border: 0.125rem solid #00ffcc; */
   border-radius: 0.5rem;
   box-shadow: 0rem 0rem 1.875rem rgba(0, 255, 204, 0.15);
   overflow: hidden;
