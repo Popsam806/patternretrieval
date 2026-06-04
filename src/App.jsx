@@ -11,10 +11,12 @@ const PatternRetrieval = () => {
   const [highScore, setHighScore] = useState(0);
   
   const [showSplash, setShowSplash] = useState(true);
+  const [hasStarted, setHasStarted] = useState(false); // NEW: Operational state tracker
   const [agentLoaded, setAgentLoaded] = useState(false);
   const agentImageRef = useRef(new Image());
 
   const isGameOverRef = useRef(false);
+  const hasStartedRef = useRef(false); // Ref duplicate to prevent input listener closure locks
   const scoreRef = useRef(0);
   const highScoreRef = useRef(0);
   const triggerGameActionRef = useRef(null);
@@ -46,13 +48,18 @@ const PatternRetrieval = () => {
     isGameOverRef.current = gameOver;
   }, [gameOver]);
 
+  // Synchronize start tracking ref
+  useEffect(() => {
+    hasStartedRef.current = hasStarted;
+  }, [hasStarted]);
+
   useEffect(() => { scoreRef.current = score; }, [score]);
   useEffect(() => { highScoreRef.current = highScore; }, [highScore]);
 
   useEffect(() => {
     agentImageRef.current.src = agentSprite;
     agentImageRef.current.onload = () => setAgentLoaded(true);
-    const timer = setTimeout(() => setShowSplash(false), 4000);
+    const timer = setTimeout(() => setShowSplash(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -96,11 +103,18 @@ const PatternRetrieval = () => {
     setScore(0);
     scoreRef.current = 0;
     setGameOver(false);
+    setHasStarted(false); // Back to menu idle loop on total failure reset
   }, []);
 
   const triggerGameAction = useCallback(() => {
     const state = gameState.current;
     if (state.isCrashing) return;
+
+    // Handle menu initialization phase first
+    if (!hasStartedRef.current) {
+      setHasStarted(true);
+      return;
+    }
 
     if (isGameOverRef.current) {
       resetGame();
@@ -110,12 +124,10 @@ const PatternRetrieval = () => {
     }
   }, [resetGame]);
 
-  // Always keep ref pointed at latest triggerGameAction execution frame
   useEffect(() => {
     triggerGameActionRef.current = triggerGameAction;
   });
 
-  // Persistent Input Controller - Attached and cleaned up properly via container ref dependencies
   useEffect(() => {
     if (showSplash || !agentLoaded) return;
 
@@ -127,9 +139,8 @@ const PatternRetrieval = () => {
     };
 
     const handleTouchStart = (e) => {
-      // If game is over, let the overlay surface handle clicks explicitly to avoid double firing
-      if (isGameOverRef.current) return;
-      
+      // If menu idle overlay or game-over overlay is active, let explicit elements process the restart
+      if (isGameOverRef.current || !hasStartedRef.current) return;
       e.preventDefault();
       triggerGameActionRef.current?.();
     };
@@ -147,7 +158,7 @@ const PatternRetrieval = () => {
         containerElement.removeEventListener('touchstart', handleTouchStart);
       }
     };
-  }, [showSplash, agentLoaded]); // Runs cleanly after initialization splash collapses
+  }, [showSplash, agentLoaded]);
 
   // Engine Effect
   useEffect(() => {
@@ -208,7 +219,10 @@ const PatternRetrieval = () => {
 
     const updatePhysics = () => {
       const state = gameState.current;
-      if (!state.isPlaying || state.isCrashing) return;
+      
+      // CRUCIAL: Pause physics execution until player hits start
+      if (!hasStarted || !state.isPlaying || state.isCrashing) return;
+
       state.agent.velocityY += state.agent.gravity;
       state.agent.y += state.agent.velocityY;
       const floorLevel = canvas.height - 80 - state.agent.height;
@@ -226,6 +240,13 @@ const PatternRetrieval = () => {
           state.agent.y + state.agent.height > state.patterns[i].y
         ) {
           state.isCrashing = true;
+          
+          const finalScore = state.score;
+          if (finalScore > highScoreRef.current) {
+            setHighScore(finalScore);
+            highScoreRef.current = finalScore;
+          }
+
           setTimeout(() => {
             state.isPlaying = false;
             setGameOver(true);
@@ -313,16 +334,15 @@ const PatternRetrieval = () => {
       }
     };
 
-    if (!gameOver) {
-      gameLoop();
-    }
+    // Keep the render engine updating so character stays on line during idling menu phases
+    gameLoop();
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('orientationchange', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [gameOver, agentLoaded, showSplash]);
+  }, [gameOver, agentLoaded, showSplash, hasStarted]); // Added hasStarted to update cycle bounds safely
 
   return (
     <div className="game-wrapper-center">
@@ -343,11 +363,24 @@ const PatternRetrieval = () => {
         <div className="hud-overlay" style={{ display: showSplash ? 'none' : 'flex' }}>
           <div className="game-title">PATTERN RETRIEVAL</div>
           <div className="scores">
-            <span>HIGH SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
+            <span>HIGHEST SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
           </div>
         </div>
         
         <canvas ref={canvasRef} id="retrievalCanvas" />
+
+        {/* This block handles the tap-to-play interface right after the splash drops */}
+        {!hasStarted && !showSplash && !gameOver && (
+          <div 
+            className="system-ready-overlay"
+            onTouchStart={(e) => { e.preventDefault(); setHasStarted(true); }}
+            onClick={() => setHasStarted(true)}
+          >
+            <p className="ready-subtitle blinking-text">
+              {window.innerWidth < 600 ? "TAP ANYWHERE TO RUN" : "PRESS SPACEBAR OR CLICK TO RUN"}
+            </p>
+          </div>
+        )}
         
         {gameOver && !showSplash && (
           <div 
@@ -356,6 +389,10 @@ const PatternRetrieval = () => {
             onClick={resetGame}
           >
             <h2>GAME OVER</h2>
+            <div className="terminal-score-panel">
+              <div className="panel-metric">RETRIEVED: <span className="value-highlight">{score}</span></div>
+              <div className="panel-metric">BEST RECORD: <span className="value-highlight">{highScore}</span></div>
+            </div>
             <button className="reboot-btn" tabIndex={-1}>
               {window.innerWidth < 600 ? "TAP TO RETRY" : "PRESS SPACEBAR OR TAP TO RETRY"}
             </button>

@@ -73,6 +73,52 @@ html, body {
 .scores span {
   margin-left: 1.25rem;
 }
+/* Start Game Ready Menu Overlay Layout */
+.system-ready-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(13, 17, 23, 0.75); /* Deepened opacity to block out background canvas elements */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  
+  /* CRUCIAL FIX: Forces this container layer to stack higher than the canvas framework */
+  z-index: 150; 
+  cursor: pointer;
+  pointer-events: auto; /* Ensures mobile browsers process the touch activation cleanly */
+}
+
+.ready-subtitle {
+  font-size: 0.875rem;
+  color: #ffffff; /* Shifted to clean white for high readability visibility contrast */
+  letter-spacing: 0.125rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* Retro arcade terminal text flickering effect */
+.blinking-text {
+  animation: retroBlink 1.2s infinite steps(2, start);
+}
+
+@keyframes retroBlink {
+  to { visibility: hidden; }
+}
+
+@media (max-width: 37.5rem) {
+  .ready-title {
+    font-size: 1.35rem;
+    letter-spacing: 0.125rem;
+  }
+  .ready-subtitle {
+    font-size: 0.8rem;
+  }
+}
 
 /* Menu Overlays */
 .system-failure-overlay {
