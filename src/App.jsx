@@ -343,7 +343,7 @@ const PatternRetrieval = () => {
         <div className="hud-overlay" style={{ display: showSplash ? 'none' : 'flex' }}>
           <div className="game-title">PATTERN RETRIEVAL</div>
           <div className="scores">
-            <span>HIGHEST SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
+            <span>HIGH SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
           </div>
         </div>
         
