@@ -363,7 +363,7 @@ const PatternRetrieval = () => {
         <div className="hud-overlay" style={{ display: showSplash ? 'none' : 'flex' }}>
           <div className="game-title">PATTERN RETRIEVAL</div>
           <div className="scores">
-            <span>HIGHEST SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
+            <span>HIGH SCORE: {highScore}</span> <span>RETRIEVED: {score}</span>
           </div>
         </div>
         
@@ -391,7 +391,7 @@ const PatternRetrieval = () => {
             <h2>GAME OVER</h2>
             <div className="terminal-score-panel">
               <div className="panel-metric">RETRIEVED: <span className="value-highlight">{score}</span></div>
-              <div className="panel-metric">BEST RECORD: <span className="value-highlight">{highScore}</span></div>
+              <div className="panel-metric">HIGH SCORE: <span className="value-highlight">{highScore}</span></div>
             </div>
             <button className="reboot-btn" tabIndex={-1}>
               {window.innerWidth < 600 ? "TAP TO RETRY" : "PRESS SPACEBAR OR TAP TO RETRY"}

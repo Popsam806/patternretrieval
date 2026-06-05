@@ -237,6 +237,36 @@ html, body {
   letter-spacing: 0.125rem;
 }
 
+/* Terminal score board for game over overlay */
+.terminal-score-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.panel-metric {
+  color: #c9d1d9; /* FIXED: Crisp, high-contrast off-white terminal text color */
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.0625rem;
+  text-shadow: 0 0 0.25rem rgba(201, 209, 217, 0.2);
+}
+
+.value-highlight {
+  color: #00ffcc; /* Vibrant bright neon cyan */
+  text-shadow: 0 0 0.5rem rgba(0, 255, 204, 0.6);
+  font-weight: bold;
+}
+
+@media (max-width: 37.5rem) {
+  .panel-metric {
+    font-size: 0.875rem;
+  }
+}
+
 @keyframes loadProgress {
   0% { width: 0%; }
   100% { width: 100%; }
