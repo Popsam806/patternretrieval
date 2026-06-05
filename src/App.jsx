@@ -59,7 +59,7 @@ const PatternRetrieval = () => {
   useEffect(() => {
     agentImageRef.current.src = agentSprite;
     agentImageRef.current.onload = () => setAgentLoaded(true);
-    const timer = setTimeout(() => setShowSplash(false), 2000);
+    const timer = setTimeout(() => setShowSplash(false), 4000);
     return () => clearTimeout(timer);
   }, []);
 
